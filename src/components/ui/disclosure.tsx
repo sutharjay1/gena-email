@@ -103,7 +103,6 @@ export function DisclosureTrigger({
       {React.Children.map(children, (child) => {
         if (!React.isValidElement(child)) return child;
 
-        // Type the child element more specifically
         type ButtonLikeProps = {
           onClick?: React.MouseEventHandler;
           role?: string;

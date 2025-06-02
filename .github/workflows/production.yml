@@ -1,0 +1,87 @@
+name: Vercel Production Deployment
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+on:
+  push:
+    branches:
+      - prod
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Cache pnpm modules
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Install Vercel CLI
+        run: pnpm add -g vercel@latest
+
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build Project Artifacts
+        run: vercel build --target=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy Project Artifacts to Vercel
+        run: |
+          # Core metadata
+          COMMIT_MESSAGE="$(git log -1 --pretty=%B)"
+          COMMIT_SHA="$(git rev-parse HEAD)"
+          COMMIT_REF="${{ github.head_ref || github.ref_name }}"
+          # Author information
+          AUTHOR_NAME="${{ github.event.head_commit.author.name || github.actor }}"
+          AUTHOR_LOGIN="${{ github.event.head_commit.author.username || github.event.head_commit.author.email || github.actor }}"
+          # Repository information
+          REPO_OWNER="${{ github.repository_owner }}"
+          REPO_NAME="${{ github.repository }}"
+          REPO_NAME="${REPO_NAME##*/}"
+          vercel deploy --prebuilt --target=production --token=${{ secrets.VERCEL_TOKEN }} \
+            -m githubDeployment="1" \
+            -m githubCommitMessage="$COMMIT_MESSAGE" \
+            -m githubCommitAuthorName="$AUTHOR_NAME" \
+            -m githubCommitAuthorLogin="$AUTHOR_LOGIN" \
+            -m githubCommitOrg="$REPO_OWNER" \
+            -m githubOrg="$REPO_OWNER" \
+            -m githubCommitRepo="$REPO_NAME" \
+            -m githubRepo="$REPO_NAME" \
+            -m githubCommitRef="$COMMIT_REF" \
+            -m githubCommitSha="$COMMIT_SHA"

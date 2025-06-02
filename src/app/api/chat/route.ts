@@ -2,7 +2,6 @@ import { createMistral } from "@ai-sdk/mistral";
 import { streamText } from "ai";
 import { NextResponse } from "next/server";
 
-// Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
 const mistral = createMistral({
@@ -14,7 +13,6 @@ export async function POST(req: Request) {
   try {
     const { prompt } = await req.json();
 
-    // Validate messages array
     if (!prompt) {
       return new Response("Invalid prompt", { status: 400 });
     }
@@ -31,7 +29,6 @@ export async function POST(req: Request) {
       maxTokens: 1000,
     });
 
-    // Use text streaming which is simpler to parse
     return NextResponse.json({
       textStream: result.textStream,
     });
