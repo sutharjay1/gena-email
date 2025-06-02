@@ -1,6 +1,6 @@
 # gena.email
 
-\*\*Open-source alternative to new.email
+\*\*Open-source alternative to new.email\*\*
 
 ## Overview
 
