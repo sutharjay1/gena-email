@@ -1,25 +1,44 @@
 # gena.email
 
-**AI-powered email generation with beautiful templates and full Tailwind CSS support**
+**Open-source alternative to new.email**
 
 ## Overview
 
-Gena Email is an AI-powered email generation platform that helps you create professional emails quickly and easily. Built on top of [react.email](https://react.email) and styled with [tailwindcss](https://tailwindcss.com), it combines the power of AI with beautiful, responsive email templates. Simply provide a prompt, and gena.email will generate a well-crafted email for you.
+[gena.email](https://gena.email) is an open-source platform for effortless email creation. It helps you craft professional, beautifully styled emails from simple prompts, using advanced language generation and fully customizable Tailwind CSS templates. Built on top of [react.email](https://react.email), it’s a community-driven alternative to new.email, designed for flexibility and full control.
+
+## Why gena.email?
+
+- **Open Source:** No vendor lock-in. Customize and extend as you want.
+- **Smart Content Generation:** Create email drafts quickly from your input.
+- **Beautiful Templates:** Fully responsive and customizable with Tailwind CSS.
+- **React-Based:** Easy integration into your own projects or workflows.
+- **HTML Support:** Full HTML email compatibility and customization.
+- **Privacy-Focused:** Keep your email content and data under your control.
 
 ## Features
 
-- **AI-Powered**: Generate emails from simple prompts
-- **Beautiful Templates**: Pre-designed templates with full Tailwind CSS customization
-- **React-based**: Built on [react.email](https://react.email) for easy integration
-- **Responsive**: Optimized for all email clients and devices
+- Generate polished email content from simple prompts
+- Pre-built, customizable email templates
+- Responsive design for all major email clients
+- Built with React and Tailwind CSS
+- Easy to self-host and extend
 
 ## Roadmap
 
-- Add more AI capabilities and prompt templates
-- Expand template library with industry-specific designs
-- Add support for email scheduling and analytics
-- Improve template customization options
+- More prompt templates and smarter content generation
+- Industry-specific email templates
+- Scheduling and analytics features
+- Richer template customization UI
 
-## Contributing
+## Get Started
 
-We welcome contributions to make gena.email even better! Feel free to submit pull requests or open issues. Your feedback and suggestions are valuable as we continue to improve the platform.
+Clone the repo, install dependencies, and run the development server:
+
+```bash
+git clone https://github.com/sutharjay1/gena-email.git
+cd gena.email
+pnpm install
+pnpm prisma generate
+pnpm prisma migrate --name init
+pnpm dev
+```
